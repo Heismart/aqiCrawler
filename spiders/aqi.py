@@ -20,12 +20,16 @@ class AqiSpider(scrapy.Spider):
             yield scrapy.Request(url, callback=self.parse_month)
 
     def parse_month(self, response):
+        """抽取每月数据url"""
+
         month_urls = response.xpath("//ul[@class='unstyled1']/li/a/@href").extract()
         for item in month_urls:
             url = urljoin(self.BASE_URL, item)
             yield scrapy.Request(url, callback=self.parse_day)
 
     def parse_day(self, response):
+        """解析每天数据"""
+        
         nodes = response.xpath("//tbody/tr")[1:]
         for node in nodes:
             item = AqicrawlerItem()
